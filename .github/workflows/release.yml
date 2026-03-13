@@ -95,7 +95,19 @@ jobs:
             --wait \
             --timeout 600
 
-          xcrun stapler staple "$RUNNER_TEMP/CombAnalyser-${{ github.ref_name }}.dmg"
+          echo "Waiting for notarization ticket to propagate..."
+          for i in 1 2 3 4 5; do
+            if xcrun stapler staple "$RUNNER_TEMP/CombAnalyser-${{ github.ref_name }}.dmg" 2>/dev/null; then
+              echo "Staple succeeded on attempt $i"
+              break
+            fi
+            if [ "$i" -eq 5 ]; then
+              echo "Staple failed after 5 attempts"
+              exit 1
+            fi
+            echo "Attempt $i failed, waiting 30s..."
+            sleep 30
+          done
 
       # ── Create ZIP ───────────────────────────────────────────────────────
       - name: Create ZIP
