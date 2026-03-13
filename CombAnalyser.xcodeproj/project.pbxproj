@@ -45,7 +45,6 @@
 		CDB4B21A2B0A2CCA006E6597 /* TemperatureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB4B2192B0A2CCA006E6597 /* TemperatureUnit.swift */; };
 		CDD314A22B05349400A557F8 /* AppSettingsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD314A12B05349400A557F8 /* AppSettingsKeys.swift */; };
 		CDD314B02B0CE97C00A557F8 /* TemperatureChartPlottable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD314AF2B0CE97C00A557F8 /* TemperatureChartPlottable.swift */; };
-		CDF5557F2BAF038A00D560FD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CDF5557E2BAF038A00D560FD /* GoogleService-Info.plist */; };
 		AA0000012C0A000100000001 /* PersistedCookSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022C0A000100000001 /* PersistedCookSession.swift */; };
 		AA0000032C0A000100000002 /* CookSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000042C0A000100000002 /* CookSessionStore.swift */; };
 		AA0000052C0A000100000003 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000062C0A000100000003 /* MenuBarManager.swift */; };
@@ -103,7 +102,6 @@
 		CDB4B2192B0A2CCA006E6597 /* TemperatureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureUnit.swift; sourceTree = "<group>"; };
 		CDD314A12B05349400A557F8 /* AppSettingsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsKeys.swift; sourceTree = "<group>"; };
 		CDD314AF2B0CE97C00A557F8 /* TemperatureChartPlottable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureChartPlottable.swift; sourceTree = "<group>"; };
-		CDF5557E2BAF038A00D560FD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AA0000022C0A000100000001 /* PersistedCookSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedCookSession.swift; sourceTree = "<group>"; };
 		AA0000042C0A000100000002 /* CookSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookSessionStore.swift; sourceTree = "<group>"; };
 		AA0000062C0A000100000003 /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
@@ -261,7 +259,6 @@
 				CDB4B20D2B016EBF006E6597 /* Utils */,
 				CD91B0012B29C8B2000D6E19 /* Services */,
 				CDB4B1DF2AFF80D6006E6597 /* Assets.xcassets */,
-				CDF5557E2BAF038A00D560FD /* GoogleService-Info.plist */,
 				CDB4B1E12AFF80D6006E6597 /* CombAnalyser.entitlements */,
 				CDB4B1E22AFF80D6006E6597 /* Preview Content */,
 			);
@@ -519,7 +516,6 @@
 			files = (
 				CDB4B1E42AFF80D6006E6597 /* Preview Assets.xcassets in Resources */,
 				CDB4B1E02AFF80D6006E6597 /* Assets.xcassets in Resources */,
-				CDF5557F2BAF038A00D560FD /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
