@@ -67,12 +67,26 @@ jobs:
             -exportPath "$RUNNER_TEMP/export" \
             -exportOptionsPlist ci/ExportOptions-DeveloperID.plist
 
-      - name: Re-sign app with hardened runtime
+      - name: Re-sign all binaries with hardened runtime
         run: |
-          codesign --force --deep --sign "Developer ID Application: Timothy Silber (6CV9KJ5VSK)" \
-            --options runtime --timestamp \
-            "$RUNNER_TEMP/export/CombAnalyser.app"
-          codesign --verify --deep --strict --verbose=2 "$RUNNER_TEMP/export/CombAnalyser.app"
+          APP="$RUNNER_TEMP/export/CombAnalyser.app"
+          IDENTITY="Developer ID Application: Timothy Silber (6CV9KJ5VSK)"
+          FLAGS="--force --sign $IDENTITY --options runtime --timestamp"
+
+          for fw in "$APP"/Contents/Frameworks/*.framework; do
+            echo "Signing framework: $(basename "$fw")"
+            codesign $FLAGS "$fw"
+          done
+
+          for dylib in "$APP"/Contents/Frameworks/*.dylib; do
+            [ -e "$dylib" ] && codesign $FLAGS "$dylib"
+          done
+
+          echo "Signing main app..."
+          codesign $FLAGS "$APP"
+
+          echo "Verifying..."
+          codesign --verify --deep --strict --verbose=2 "$APP"
 
       # ── Create DMG ───────────────────────────────────────────────────────
       - name: Install create-dmg
