@@ -67,6 +67,13 @@ jobs:
             -exportPath "$RUNNER_TEMP/export" \
             -exportOptionsPlist ci/ExportOptions-DeveloperID.plist
 
+      - name: Re-sign app with hardened runtime
+        run: |
+          codesign --force --deep --sign "Developer ID Application: Timothy Silber (6CV9KJ5VSK)" \
+            --options runtime --timestamp \
+            "$RUNNER_TEMP/export/CombAnalyser.app"
+          codesign --verify --deep --strict --verbose=2 "$RUNNER_TEMP/export/CombAnalyser.app"
+
       # ── Create DMG ───────────────────────────────────────────────────────
       - name: Install create-dmg
         run: brew install create-dmg
