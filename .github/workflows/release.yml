@@ -39,6 +39,9 @@ jobs:
             -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security list-keychain -d user -s "$KEYCHAIN_PATH"
 
+          curl -sL "https://www.apple.com/certificateauthority/DeveloperIDG2CA.cer" -o "$RUNNER_TEMP/DeveloperIDG2CA.cer"
+          security import "$RUNNER_TEMP/DeveloperIDG2CA.cer" -k "$KEYCHAIN_PATH" -T /usr/bin/codesign
+
           echo "Verifying code signing identity..."
           security find-identity -v -p codesigning "$KEYCHAIN_PATH"
 
