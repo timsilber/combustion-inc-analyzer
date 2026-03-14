@@ -81,33 +81,51 @@ jobs:
             # create-dmg exits 1 when no signing identity is passed for the DMG itself — that's fine,
             # the .app inside is already signed and we sign the DMG in the next step if needed.
 
-      # ── Notarize + Staple DMG ────────────────────────────────────────────
-      - name: Notarize DMG
+      # ── Notarize the .app (via zip), then staple ─────────────────────────
+      - name: Notarize app
         env:
           NOTARIZATION_APPLE_ID: ${{ secrets.NOTARIZATION_APPLE_ID }}
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
           NOTARIZATION_TEAM_ID: ${{ secrets.NOTARIZATION_TEAM_ID }}
         run: |
-          xcrun notarytool submit "$RUNNER_TEMP/CombAnalyser-${{ github.ref_name }}.dmg" \
+          ditto -c -k --keepParent \
+            "$RUNNER_TEMP/export/CombAnalyser.app" \
+            "$RUNNER_TEMP/CombAnalyser-notarize.zip"
+
+          SUBMIT_OUTPUT=$(xcrun notarytool submit "$RUNNER_TEMP/CombAnalyser-notarize.zip" \
             --apple-id "$NOTARIZATION_APPLE_ID" \
             --password "$NOTARIZATION_PASSWORD" \
             --team-id "$NOTARIZATION_TEAM_ID" \
             --wait \
-            --timeout 600
+            --timeout 600 2>&1) || true
 
-          echo "Waiting for notarization ticket to propagate..."
-          for i in 1 2 3 4 5; do
-            if xcrun stapler staple "$RUNNER_TEMP/CombAnalyser-${{ github.ref_name }}.dmg" 2>/dev/null; then
-              echo "Staple succeeded on attempt $i"
-              break
-            fi
-            if [ "$i" -eq 5 ]; then
-              echo "Staple failed after 5 attempts"
-              exit 1
-            fi
-            echo "Attempt $i failed, waiting 30s..."
-            sleep 30
-          done
+          echo "$SUBMIT_OUTPUT"
+
+          SUBMISSION_ID=$(echo "$SUBMIT_OUTPUT" | grep -o '[0-9a-f\-]\{36\}' | head -1)
+
+          if echo "$SUBMIT_OUTPUT" | grep -q "status: Invalid"; then
+            echo "Notarization rejected. Fetching log..."
+            xcrun notarytool log "$SUBMISSION_ID" \
+              --apple-id "$NOTARIZATION_APPLE_ID" \
+              --password "$NOTARIZATION_PASSWORD" \
+              --team-id "$NOTARIZATION_TEAM_ID" || true
+            exit 1
+          fi
+
+          xcrun stapler staple "$RUNNER_TEMP/export/CombAnalyser.app"
+
+      # ── Recreate DMG with stapled app ────────────────────────────────────
+      - name: Recreate DMG with stapled app
+        run: |
+          rm -f "$RUNNER_TEMP/CombAnalyser-${{ github.ref_name }}.dmg"
+          create-dmg \
+            --volname "CombAnalyser ${{ github.ref_name }}" \
+            --icon "CombAnalyser.app" 200 190 \
+            --hide-extension "CombAnalyser.app" \
+            --app-drop-link 600 185 \
+            --filesystem APFS \
+            "$RUNNER_TEMP/CombAnalyser-${{ github.ref_name }}.dmg" \
+            "$RUNNER_TEMP/export/" || true
 
       # ── Create ZIP ───────────────────────────────────────────────────────
       - name: Create ZIP
