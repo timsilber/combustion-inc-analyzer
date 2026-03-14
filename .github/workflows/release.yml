@@ -37,10 +37,12 @@ jobs:
           security set-key-partition-list \
             -S apple-tool:,apple:,codesign: \
             -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" $(security list-keychain -d user | tr -d '"')
 
           curl -sL "https://www.apple.com/certificateauthority/DeveloperIDG2CA.cer" -o "$RUNNER_TEMP/DeveloperIDG2CA.cer"
+          curl -sL "https://www.apple.com/certificateauthority/AppleWWDRCAG2.cer" -o "$RUNNER_TEMP/AppleWWDRCAG2.cer"
           security import "$RUNNER_TEMP/DeveloperIDG2CA.cer" -k "$KEYCHAIN_PATH" -T /usr/bin/codesign
+          security import "$RUNNER_TEMP/AppleWWDRCAG2.cer" -k "$KEYCHAIN_PATH" -T /usr/bin/codesign
 
           echo "Verifying code signing identity..."
           security find-identity -v -p codesigning "$KEYCHAIN_PATH"
